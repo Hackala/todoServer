@@ -6,12 +6,12 @@ const router = express.Router()
 
 router.route('/api/teams')
     .get(auth.signed, auth.canRead, ctrl.list)
-    .post(auth.signed, auth.canRead, auth.canWrite, ctrl.create)
+    .post(auth.signed, auth.canWrite, ctrl.create)
 
 router.route('/api/teams/:id')
     .get(auth.signed, auth.canRead, ctrl.read)
-    .put(auth.signed, auth.canRead, auth.canWrite, ctrl.update)
-    .delete(auth.signed, auth.canRead, auth.canWrite, ctrl.remove)
+    .put(auth.signed, auth.canWrite, ctrl.update)
+    .delete(auth.signed, auth.canWrite, ctrl.remove)
 
 router.param('id', ctrl.getId)
 
