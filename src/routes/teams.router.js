@@ -5,13 +5,13 @@ import auth from '../controllers/auth.controller'
 const router = express.Router()
 
 router.route('/api/teams')
-    .get(auth.signed, auth.canRead, ctrl.list)
-    .post(auth.signed, auth.canWrite, ctrl.create)
+    .get(auth.signed, ctrl.list)
+    .post(auth.signed, ctrl.create)
 
 router.route('/api/teams/:id')
-    .get(auth.signed, auth.canRead, ctrl.read)
-    .put(auth.signed, auth.canWrite, ctrl.update)
-    .delete(auth.signed, auth.canWrite, ctrl.remove)
+    .get(auth.signed, ctrl.read)
+    .put(auth.signed, ctrl.update)
+    .delete(auth.signed, ctrl.remove)
 
 router.param('id', ctrl.getId)
 

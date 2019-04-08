@@ -3,20 +3,13 @@ import request from 'request'
 import jwt from 'jsonwebtoken'
 import unit from '../database/unitOfWork'
 import config from '../config'
-
-const getUrl = (url) => {
-    if (url.substring(0, 5) !== '/api/') return ''
-    url = url.substring(5)
-    let i = url.indexOf('/')
-    if (i > 0) url = url.substring(0, i)
-    return url
-}
+import helper from '../helpers/auth.helper'
 
 const login = (req, res) => {
     let token = req.query.token
     if (!token) {
         request.get({
-            url: 'http://localhost:5000/login',
+            url: config.identity,
             headers: { client: 'TK' }
         }, (err, result) => {
             res.status(200).send(result.body)
@@ -36,17 +29,17 @@ const login = (req, res) => {
 }
 
 const signed = (req, res, next) => {
-    let token = req.headers.authorization.substring(7)
-    if (!config.token) {
+    if(!req.headers.authorization) {
         res.status(401).send('Access denied')
     } else {
+        let token = req.headers.authorization.substring(7)
         jwt.verify(token, config.secret, (err, result) => {
             if (err) {
                 res.status(401).send('Access denied')
             } else {
                 config.token = token
                 config.currentUser = result
-                let exp = result.exp - (new Date().getTime() / 1000)
+                // let exp = result.exp - (new Date().getTime() / 1000)
                 next()
             }
         })
@@ -54,55 +47,30 @@ const signed = (req, res, next) => {
 }
 
 const canRead = (req, res, next) => {
-    let canRead = false
-    let found = _.some(config.currentUser.scopes, (e)=> _.includes('admin,guest,lead'))
-    console.log(found)
-    config.currentUser.scopes.forEach((s) => {
-        if (s.role === 'admin' || s.role === 'guest' || s.role === 'lead') {
-            canRead = true
-            return next()
-        }
-    })
-    console.log(canRead)
-    if (!canRead) {
-        let url = getUrl(req.url)
-        switch (url) {
-            case 'customers':
-            case 'projects':
-            case 'calendar':
+    if (helper.foundAny(config.currentUser.scopes, 'admin,guest,lead')) {
+        next()
+    } else {
+        helper.canRead(helper.getUrl(req.url), req.id, (result) => {
+            if (result) {
                 next()
-                break
-            case 'teams':
-                if (req.id !== undefined) {
-                    unit.Teams.getOne(req.id, (status, team) => {
-                        if (status !== 200) res.status(status).send('Not found')
-                        let result = _.find(config.currentUser.scopes, ['team', team.name]);
-                        if (result === undefined) {
-                            res.status(404).send('NOT FOUND')
-                        } else {
-                            next()
-                        }
-                    })
-                } else {
-                    res.status(401).end()
-                    return
-                }
-                break
-            case 'people':
-                next()
-                break
-            default:
-                next()
-                break
-        }
+            } else {
+                res.status(401).send('ACCESS DENIED!')
+            }
+        })
     }
 }
 
+
 const canWrite = (req, res, next) => {
-    if (config.currentUser.scopes[0].role !== 'admin') {
-        let url = getUrl(req.url)
+    if (helper.foundAny(config.currentUser.scopes, 'admin')) {
+        next()
+    } else {
+        if (helper.canWrite(helper.getUrl(req.url), req.id)) {
+            next()
+        } else {
+            res.status(401).send('ACCESS DENIED!')
+        }
     }
-    next()
 }
 
 export default { login, signed, canRead, canWrite }

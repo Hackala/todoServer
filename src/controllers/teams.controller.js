@@ -6,7 +6,7 @@ const list = (req, res) => {
     Teams.getAll((status, result) => {
         res.status(status).send(result)
     },
-        [{ include: 'members.person', fields: '_id firstName lastName' }]
+    [{ include: 'engagement.person', fields: 'firstName lastName' }]
     )
 }
 
@@ -16,7 +16,7 @@ const read = (req, res) => {
     Teams.getOne(req.id, (status, result) => {
         res.status(status).send(result)
     },
-        [{ include: 'members.person', fields: '_id firstName lastName' }]
+    [{ include: 'engagement.person', fields: 'firstName lastName' }]
     )
 }
 

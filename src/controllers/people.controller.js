@@ -6,7 +6,7 @@ const list = (req, res) => {
     People.getAll((status, result) => {
         res.status(status).send(result)
     },
-        [{ include: 'engagement.team', fields: 'name' }]
+    [{ include: 'engagement.team', fields: 'name' }]
     )
 }
 
@@ -16,7 +16,7 @@ const read = (req, res) => {
     People.getOne(req.id, (status, result) => {
         res.status(status).send(result)
     },
-        [{ include: 'engagement.team', fields: 'name' }]
+    [{ include: 'engagement.team', fields: 'name' }]
     )
 }
 
