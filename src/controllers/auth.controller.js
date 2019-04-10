@@ -12,6 +12,12 @@ const getUrl = (url) => {
     return url
 }
 
+const logout = (req, res) => {
+    config.token = 'x'
+    config.currentUser = { id: '', name: '', sub: '', cli: '', scopes: [{ role: '', action: '', team: '' }] }
+    res.redirect('/')
+}
+
 const login = (req, res) => {
     let token = req.query.token
     if (!token) {
@@ -24,7 +30,7 @@ const login = (req, res) => {
     } else {
         jwt.verify(token, config.secret, (err, result) => {
             if (err) {
-                res.status(401).send('Invalid token')
+                result.status(401).send('Invalid token')
             } else {
                 config.token = token
                 config.currentUser = result
@@ -105,4 +111,4 @@ const canWrite = (req, res, next) => {
     next()
 }
 
-export default { login, signed, canRead, canWrite }
+export default { login, logout, signed, canRead, canWrite }

@@ -16,6 +16,11 @@ export default (title = 'TimeKeeper') => {
             ${config.currentUser.cli}<br>
             ${config.currentUser.scopes[0].role}:${config.currentUser.scopes[0].action} <br>
             ${config.token}
+            <div>
+            <a href='/auth/login'><button>Login</button></a>
+            &nbsp;&nbsp;
+            <a href='/auth/logout'><button>Logout</button></a>
+            </div>
             </p>
         </body>
     </html>`
