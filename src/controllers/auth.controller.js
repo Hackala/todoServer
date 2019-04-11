@@ -35,7 +35,7 @@ const login = (req, res) => {
 }
 
 const signed = (req, res, next) => {
-    if(!req.headers.authorization) {
+    if (!req.headers.authorization) {
         res.status(401).send('Access denied')
     } else {
         let token = req.headers.authorization.substring(7)
@@ -68,13 +68,17 @@ const canRead = (req, res, next) => {
 
 
 const canWrite = (req, res, next) => {
-    if (helper.foundAny(config.currentUser.scopes, 'admin')) {
-        next()
+    if (helper.foundAny(config.currentUser.scopes, 'guest')) {
+        res.status(401).send('ACCESS DENIED!')
     } else {
-        if (helper.canWrite(helper.getUrl(req.url), req.id)) {
+        if (helper.foundAny(config.currentUser.scopes, 'admin')) {
             next()
         } else {
-            res.status(401).send('ACCESS DENIED!')
+            if (helper.canWrite(helper.getUrl(req.url), req.id)) {
+                next()
+            } else {
+                res.status(401).send('ACCESS DENIED!')
+            }
         }
     }
 }

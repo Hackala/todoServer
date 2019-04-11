@@ -47,12 +47,16 @@ const canRead = (url, id, callback) => {
 }
 
 const canWrite = (url, id) => {
+    let teams = []
+    config.currentUser.scopes.forEach((s) => {
+        if(s.role === 'lead') teams.push(s.team)
+    })
     switch (url) {
-        case 'customers':
-        case 'projects':
         case 'calendar':
+            return (teams.length > 0) 
+            break
         case 'people':
-            return true
+            return (teams.length > 0 || id === config.currentUser.id) 
             break
         case 'teams':
             if (id !== undefined) {
