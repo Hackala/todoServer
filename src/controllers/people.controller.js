@@ -20,7 +20,11 @@ const read = (req, res) => {
     )
 }
 
-const update = (req, res) => { People.update(req.id, req.body, (status, result) => { res.status(status).send(result) }) }
+const update = (req, res) => { People.update(req.id, req.body, (status, result) => { 
+console.log(status)
+console.log(result)
+res.status(status).send(result) 
+}) }
 
 const remove = (req, res) => { People.remove(req.id, (status, result) => { res.status(status).send(result) }) }
 
