@@ -6,7 +6,7 @@ const list = (req, res) => {
     People.getAll((status, result) => {
         res.status(status).send(result)
     },
-    [{ include: 'engagement.team', fields: 'name' }]
+        [{ include: 'engagement.team', fields: 'name' }]
     )
 }
 
@@ -16,15 +16,15 @@ const read = (req, res) => {
     People.getOne(req.id, (status, result) => {
         res.status(status).send(result)
     },
-    [{ include: 'engagement.team', fields: 'name' }]
+        [{ include: 'engagement.team', fields: 'name' }]
     )
 }
 
-const update = (req, res) => { People.update(req.id, req.body, (status, result) => { 
-console.log(status)
-console.log(result)
-res.status(status).send(result) 
-}) }
+const update = (req, res) => {
+    People.update(req.id, req.body, (status, result) => {
+        res.status(status).send(result)
+    })
+}
 
 const remove = (req, res) => { People.remove(req.id, (status, result) => { res.status(status).send(result) }) }
 
