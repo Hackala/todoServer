@@ -1,4 +1,6 @@
 import { People } from '../database/unitOfWork'
+import formidable from 'formidable'
+import fs from 'fs'
 
 const create = (req, res) => { People.insert(req.body, (status, result) => { res.status(status).send(result) }) }
 
@@ -21,8 +23,13 @@ const read = (req, res) => {
 }
 
 const update = (req, res) => {
-    People.update(req.id, req.body, (status, result) => {
-        res.status(status).send(result)
+    let form = new formidable.IncomingForm()
+    form.keepExtensions = true
+    form.parse(req, (err, fields, files) => {
+        console.log(files.photo)
+        People.update(req.id, fields, (status, result) => {
+            res.status(status).send(result)
+        })
     })
 }
 
