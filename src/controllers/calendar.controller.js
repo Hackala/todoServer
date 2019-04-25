@@ -24,4 +24,9 @@ const update = (req, res) => { Calendar.update(req.id, req.body, (status, result
 
 const remove = (req, res) => { Calendar.remove(req.id, (status, result) => { res.status(status).send(result) }) }
 
-export default { create, list, getId, read, update, remove }
+const month = (req, res) => {
+    console.log(req)
+    res.status(200).send('OK')
+}
+
+export default { create, list, getId, read, update, remove, month }

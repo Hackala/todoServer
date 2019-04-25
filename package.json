@@ -25,6 +25,7 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "formidable": "^1.2.1",
+    "ftp": "^0.3.10",
     "helmet": "^3.16.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",

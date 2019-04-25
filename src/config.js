@@ -2,6 +2,7 @@ export default {
     env: process.env.NODE_ENV || 'development',
     port: process.env.PORT || 3000,
     secret: 'Time$ch00l',
+    ftpOptions: { host: 'ftp.smarterasp.net', user: 'gigiSchool', password: 'gigiSchool' },
     token: 'x',
     currentUser: {
         id: '', name: '', sub: '', cli: '', scopes: [{ role: '', action: '', team: '' }]
