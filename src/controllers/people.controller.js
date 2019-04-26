@@ -7,7 +7,6 @@ import config from '../config'
 const create = (req, res) => { People.insert(req.body, (status, result) => { res.status(status).send(result) }) }
 
 const list = (req, res) => {
-    console.log('eo me')
     People.getAll((status, result) => {
         res.status(status).send(result)
     },

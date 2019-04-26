@@ -6,8 +6,8 @@ class Repository {
         this.collection = mongoose.model(model)
     }
 
-    getAll(callback, params = '') {
-        let prom = this.collection.find()
+    getAll(callback, params = '', filter={}) {
+        let prom = this.collection.find(filter)
         if (params !== '') {
             params.forEach((e) => {
                 prom.populate(e.include, e.fields)
