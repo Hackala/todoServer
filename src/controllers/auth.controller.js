@@ -14,13 +14,13 @@ const logout = (req, res) => {
 const login = (req, res) => {
     let token = req.query.token
     if (!token) {
-        res.redirect(config.identity + '?clid=TK')
-        // request.get({
-        //     url: config.identity,
-        //     headers: { client: 'TK' }
-        // }, (err, result) => {
-        //     res.status(200).send(result.body)
-        // })
+        // res.redirect(config.identity + '?clid=TK')
+        request.get({
+            url: config.identity,
+            headers: { client: 'TK' }
+        }, (err, result) => {
+            res.status(200).send(result.body)
+        })
     } else {
         jwt.verify(token, config.secret, (err, result) => {
             if (err) {
