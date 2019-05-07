@@ -6,8 +6,8 @@ class Repository {
         this.collection = mongoose.model(model)
     }
 
-    getAll(callback, params = '', filter={}) {
-        let prom = this.collection.find(filter)
+    getAll(callback, params = '', filter={}, sort={}) {
+        let prom = this.collection.find(filter).sort(sort)
         if (params !== '') {
             params.forEach((e) => {
                 prom.populate(e.include, e.fields)
@@ -39,6 +39,8 @@ class Repository {
     }
 
     insert(data, callback) {
+        console.log('INSERT')
+        console.log(data)
         let obj = new this.collection(data)
         obj.save(data, (err, result) => {
             if (err) {
