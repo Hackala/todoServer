@@ -9,6 +9,6 @@ export default {
     },
     identity: 'http://ec2-34-221-254-153.us-west-2.compute.amazonaws.com:5000/',
     // identity: 'http://localhost:5000/login',
-    mongoUri: 'mongodb://gigiSchool:Popokatepet1@ds135036.mlab.com:35036/timekeeper'
+    mongo: 'mongodb://gigiSchool:Popokatepet1@ds135036.mlab.com:35036/timekeeper'
     // mongo: 'mongodb://localhost:27017/school'
 }
