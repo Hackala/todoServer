@@ -29,11 +29,13 @@ const update = (req, res) => {
     form.keepExtensions = true
     form.parse(req, (err, fields, files) => {
         if (fields) {
+            console.log(fields)
             People.update(req.id, fields, (status, result) => {
                 res.status(status).send(result)
             })
         }
         if (files.photo) {
+            console.log(files.photo)
             People.getOne(req.id, (status, result) => {
                 if (status === 200) {
                     let client = new ftp()
