@@ -1,24 +1,36 @@
 import mongoose from 'mongoose'
 import _ from 'lodash'
+import config from '../config'
+
+let pageSize = config.pageSize
 
 class Repository {
     constructor(model) {
         this.collection = mongoose.model(model)
     }
 
-    getAll(callback, params = '', filter={}, sort={}) {
+    getAll(callback, params = '', filter = {}, sort = {}, page = 0) {
+        let pages = 0, items = 0
         let prom = this.collection.find(filter).sort(sort)
         if (params !== '') {
             params.forEach((e) => {
                 prom.populate(e.include, e.fields)
             })
         }
-        prom.exec((err, result) => {
-            if (err) {
-                callback(400, err)
-            } else {
-                callback(200, result)
+        this.collection.countDocuments({}, (err, cnt) => {
+            if (page) {
+                items = cnt
+                pages = Math.trunc(items / pageSize) + 1
+                if (page > pages) page = pages
+                prom.skip(pageSize * (page - 1)).limit(pageSize)
             }
+            prom.exec((err, result) => {
+                if (err) {
+                    callback(400, err)
+                } else {
+                    callback(200, result, { page, items, pages })
+                }
+            })
         })
     }
 
@@ -39,8 +51,6 @@ class Repository {
     }
 
     insert(data, callback) {
-        console.log('INSERT')
-        console.log(data)
         let obj = new this.collection(data)
         obj.save(data, (err, result) => {
             if (err) {

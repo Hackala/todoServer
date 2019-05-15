@@ -1,4 +1,3 @@
-import Person from '../models/person.model'
 import { People } from '../database/unitOfWork'
 import formidable from 'formidable'
 import ftp from 'ftp'
@@ -7,10 +6,13 @@ import config from '../config'
 const create = (req, res) => { People.insert(req.body, (status, result) => { res.status(status).send(result) }) }
 
 const list = (req, res) => {
-    People.getAll((status, result) => {
+    let page = parseInt(req.headers.page) || 0
+    People.getAll((status, result, head) => {
+        if (head !== undefined) res.header({ page: head.page, pages: head.pages, items: head.items })
         res.status(status).send(result)
     },
-        [{ include: 'engagement.team', fields: 'name' }]
+        [{ include: 'engagement.team', fields: 'name' }],
+        {}, { firstName: 1 }, page
     )
 }
 
@@ -29,13 +31,11 @@ const update = (req, res) => {
     form.keepExtensions = true
     form.parse(req, (err, fields, files) => {
         if (fields) {
-            console.log(fields)
             People.update(req.id, fields, (status, result) => {
                 res.status(status).send(result)
             })
         }
         if (files.photo) {
-            console.log(files.photo)
             People.getOne(req.id, (status, result) => {
                 if (status === 200) {
                     let client = new ftp()
