@@ -1,8 +1,6 @@
 import mongoose from 'mongoose'
 import _ from 'lodash'
-import config from '../config'
-
-let pageSize = config.pageSize
+import { pageSize } from '../config'
 
 class Repository {
     constructor(model) {

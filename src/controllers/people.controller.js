@@ -7,8 +7,12 @@ const create = (req, res) => { People.insert(req.body, (status, result) => { res
 
 const list = (req, res) => {
     let page = parseInt(req.headers.page) || 0
+    console.log(page)
     People.getAll((status, result, head) => {
-        if (head !== undefined) res.header({ page: head.page, pages: head.pages, items: head.items })
+        if (head !== undefined) {
+            console.log(head)
+            res.set({ page: head.page, pages: head.pages, items: head.items })
+        }
         res.status(status).send(result)
     },
         [{ include: 'engagement.team', fields: 'name' }],
