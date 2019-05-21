@@ -6,18 +6,17 @@ import config from '../config'
 const create = (req, res) => { People.insert(req.body, (status, result) => { res.status(status).send(result) }) }
 
 const list = (req, res) => {
-    let page = parseInt(req.headers.page) || 0
-    console.log(page)
-    People.getAll((status, result, head) => {
+    let selOptions = {
+        include: [{ include: 'engagement.team', fields: 'name' }],
+        page: parseInt(req.headers.page) || 0,
+        sort: { lastName: 1 }
+    }
+    People.getAll(selOptions, (status, result, head) => {
         if (head !== undefined) {
-            console.log(head)
-            res.set({ page: head.page, pages: head.pages, items: head.items })
+            res.header({ page: head.page, pages: head.pages, items: head.items })
         }
         res.status(status).send(result)
-    },
-        [{ include: 'engagement.team', fields: 'name' }],
-        {}, { firstName: 1 }, page
-    )
+    })
 }
 
 const getId = (req, res, next, id) => { req.id = id; next() }
@@ -40,6 +39,8 @@ const update = (req, res) => {
             })
         }
         if (files.photo) {
+            console.log(req.id)
+            console.log(config.ftpOptions)
             People.getOne(req.id, (status, result) => {
                 if (status === 200) {
                     let client = new ftp()

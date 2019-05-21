@@ -7,22 +7,22 @@ class Repository {
         this.collection = mongoose.model(model)
     }
 
-    getAll(callback, params = '', filter = {}, sort = {}, page = 0) {
-        let pages = 0, items = 0
-        let prom = this.collection.find(filter).sort(sort)
-        if (params !== '') {
-            params.forEach((e) => {
-                prom.populate(e.include, e.fields)
+    getAll({ select = '', include = [], filter = {}, sort = {}, page = 0 } = {}, callback) {
+        let pages = 0, items = 0, pageSize = 5
+        let coll = this.collection.find(filter).sort(sort)
+        if (include !== '') {
+            include.forEach((e) => {
+                coll.populate(e.include, e.fields)
             })
         }
-        this.collection.countDocuments({}, (err, cnt) => {
+        this.collection.countDocuments((err, cnt) => {
             if (page) {
                 items = cnt
                 pages = Math.trunc(items / pageSize) + 1
                 if (page > pages) page = pages
-                prom.skip(pageSize * (page - 1)).limit(pageSize)
+                coll.skip(pageSize * (page - 1)).limit(pageSize)
             }
-            prom.exec((err, result) => {
+            coll.exec((err, result) => {
                 if (err) {
                     callback(400, err)
                 } else {
