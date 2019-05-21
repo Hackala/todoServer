@@ -46,7 +46,7 @@ const update = (req, res) => {
                     let client = new ftp()
                     client.on('ready', () => {
                         client.put(files.photo.path, result.image + '.jpg', (err) => {
-                            client.end
+                            client.end()
                         })
                     })
                     client.connect(config.ftpOptions)

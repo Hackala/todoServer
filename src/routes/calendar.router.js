@@ -17,8 +17,8 @@ router.route('/api/month/:person/:year/:month')
 
 router.param('id', ctrl.getId)
 
-// router.param('person', (req, res, next, person) => { req.person = person; next() })
-// router.param('year', (req, res, next, year) => { req.year = year; next() })
-// router.param('month', (req, res, next, month) => { req.month = month; next() })
+router.param('person', (req, res, next, person) => { req.person = person; next() })
+router.param('year', (req, res, next, year) => { req.year = year; next() })
+router.param('month', (req, res, next, month) => { req.month = month; next() })
 
 export default router

@@ -28,9 +28,9 @@ const month = (req, res) => {
     Calendar.getAll((status, result) => {
         res.status(status).send(result)
     },
-        [{ include: 'team', fields: '_id name' }, { include: 'customer', fields: '_id name' }]
-        // ,
-        // { user: req.person }
+    [{ include: 'team', fields: '_id name' }, { include: 'customer', fields: '_id name' }],
+    { person: req.person, '$where':'this.date.getMonth()===' + req.month + ' && this.date.getFullYear()===' + req.year },
+    { date:1 }
     )
 }
 
