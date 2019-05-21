@@ -3,11 +3,9 @@ import { Teams } from '../database/unitOfWork'
 const create = (req, res) => { Teams.insert(req.body, (status, result) => { res.status(status).send(result) }) }
 
 const list = (req, res) => {
-    Teams.getAll((status, result) => {
+    Teams.getAll({ select: 'name description'}, (status, result) => {
         res.status(status).send(result)
-    },
-    [{ include: 'engagement.person', fields: 'firstName lastName' }]
-    )
+    })
 }
 
 const getId = (req, res, next, id) => { req.id = id; next() }
@@ -16,7 +14,7 @@ const read = (req, res) => {
     Teams.getOne(req.id, (status, result) => {
         res.status(status).send(result)
     },
-    [{ include: 'engagement.person', fields: 'firstName lastName' }]
+        [{ include: 'engagement.person', fields: 'firstName lastName' }]
     )
 }
 

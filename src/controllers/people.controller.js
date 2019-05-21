@@ -6,10 +6,11 @@ import config from '../config'
 const create = (req, res) => { People.insert(req.body, (status, result) => { res.status(status).send(result) }) }
 
 const list = (req, res) => {
+    console.log(req.headers.filter)
     let selOptions = {
         include: [{ include: 'engagement.team', fields: 'name' }],
         page: parseInt(req.headers.page) || 0,
-        sort: { lastName: 1 }
+        sort: (req.headers.sort === 'id') ? { '_id': 1 } : { 'lastName': 1 }
     }
     People.getAll(selOptions, (status, result, head) => {
         if (head !== undefined) {
@@ -22,6 +23,7 @@ const list = (req, res) => {
 const getId = (req, res, next, id) => { req.id = id; next() }
 
 const read = (req, res) => {
+    console.log(req.id)
     People.getOne(req.id, (status, result) => {
         res.status(status).send(result)
     },

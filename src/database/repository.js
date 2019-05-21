@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import _ from 'lodash'
-import { pageSize } from '../config'
+import config from '../config'
 
 class Repository {
     constructor(model) {
@@ -8,8 +8,8 @@ class Repository {
     }
 
     getAll({ select = '', include = [], filter = {}, sort = {}, page = 0 } = {}, callback) {
-        let pages = 0, items = 0, pageSize = 5
-        let coll = this.collection.find(filter).sort(sort)
+        let pages = 0, items = 0
+        let coll = this.collection.find(filter).sort(sort).select(select)
         if (include !== '') {
             include.forEach((e) => {
                 coll.populate(e.include, e.fields)
@@ -18,9 +18,9 @@ class Repository {
         this.collection.countDocuments((err, cnt) => {
             if (page) {
                 items = cnt
-                pages = Math.trunc(items / pageSize) + 1
+                pages = Math.trunc(items / config.pageSize) + 1
                 if (page > pages) page = pages
-                coll.skip(pageSize * (page - 1)).limit(pageSize)
+                coll.skip(config.pageSize * (page - 1)).limit(config.pageSize)
             }
             coll.exec((err, result) => {
                 if (err) {

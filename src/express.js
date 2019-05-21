@@ -6,7 +6,7 @@ import routes from './routes'
 import template from './template'
 
 const app = express()
-app.use(cors())
+app.use(cors({ exposedHeaders:'*'}))
 app.use(helmet())
 app.use(bodyParser.json())
 app.use(bodyParser.text())
