@@ -8,6 +8,11 @@ class Repository {
     }
 
     getAll({ select = '', include = [], filter = {}, sort = {}, page = 0 } = {}, callback) {
+        console.log('select ', select)
+        console.log('include ', include)
+        console.log('filter ', filter)
+        console.log('sort ', sort)
+        console.log('page ', page)
         let pages = 0, items = 0
         let coll = this.collection.find(filter).sort(sort).select(select)
         if (include !== '') {
