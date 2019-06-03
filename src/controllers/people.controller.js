@@ -6,7 +6,6 @@ import config from '../config'
 const create = (req, res) => { People.insert(req.body, (status, result) => { res.status(status).send(result) }) }
 
 const list = (req, res) => {
-    console.log(req.headers.filter)
     let selOptions = {
         include: [{ include: 'engagement.team', fields: 'name' }],
         page: parseInt(req.headers.page) || 0,
@@ -23,7 +22,6 @@ const list = (req, res) => {
 const getId = (req, res, next, id) => { req.id = id; next() }
 
 const read = (req, res) => {
-    console.log(req.id)
     People.getOne(req.id, (status, result) => {
         res.status(status).send(result)
     },
@@ -33,6 +31,7 @@ const read = (req, res) => {
 
 const update = (req, res) => {
     let form = new formidable.IncomingForm()
+    console.log(form)
     form.keepExtensions = true
     form.parse(req, (err, fields, files) => {
         if (fields) {
@@ -41,8 +40,6 @@ const update = (req, res) => {
             })
         }
         if (files.photo) {
-            console.log(req.id)
-            console.log(config.ftpOptions)
             People.getOne(req.id, (status, result) => {
                 if (status === 200) {
                     let client = new ftp()
@@ -58,6 +55,12 @@ const update = (req, res) => {
     })
 }
 
+const patch = (req, res) => {
+    People.update(req.id, req.body, (status, result) => {
+        res.status(status).send(result)
+    })
+}
+
 const remove = (req, res) => { People.remove(req.id, (status, result) => { res.status(status).send(result) }) }
 
-export default { create, list, getId, read, update, remove }
+export default { create, list, getId, read, update, patch, remove }

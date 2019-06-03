@@ -10,6 +10,7 @@ router.route('/api/people')
 router.route('/api/people/:id')
     .get(ctrl.read)
     .put(ctrl.update)
+    .patch(ctrl.patch)
     .delete(ctrl.remove)
 
 router.param('id', ctrl.getId)
