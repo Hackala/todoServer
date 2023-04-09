@@ -7,43 +7,19 @@ class Repository {
         this.collection = mongoose.model(model)
     }
 
-    getAll({ select = '', include = [], filter = {}, sort = {}, page = 0 } = {}, callback) {
-        console.log('select ', select)
-        console.log('include ', include)
-        console.log('filter ', filter)
-        console.log('sort ', sort)
-        console.log('page ', page)
-        let pages = 0, items = 0
-        let coll = this.collection.find(filter).sort(sort).select(select)
-        if (include !== '') {
-            include.forEach((e) => {
-                coll.populate(e.include, e.fields)
-            })
-        }
-        this.collection.countDocuments((err, cnt) => {
-            if (page) {
-                items = cnt
-                pages = Math.trunc(items / config.pageSize) + 1
-                if (page > pages) page = pages
-                coll.skip(config.pageSize * (page - 1)).limit(config.pageSize)
+    getAll(callback) {
+        let coll = this.collection();
+        coll.exec((err, result) => {
+            if (err) {
+                callback(400, err)
+            } else {
+                callback(200, result)
             }
-            coll.exec((err, result) => {
-                if (err) {
-                    callback(400, err)
-                } else {
-                    callback(200, result, { page, items, pages })
-                }
-            })
         })
     }
 
-    getOne(id, callback, params = '') {
+    getOne(id, callback) {
         let prom = this.collection.findById(id)
-        if (params !== '') {
-            params.forEach((e) => {
-                prom.populate(e.include, e.fields)
-            })
-        }
         prom.exec((err, result) => {
             if (err) {
                 callback(400, err)
@@ -95,4 +71,4 @@ class Repository {
     }
 }
 
-module.exports = Repository
+export default Repository

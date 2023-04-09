@@ -1,17 +1,8 @@
-import '../models/person.model'
-import '../models/team.model'
-import '../models/customer.model'
-import '../models/project.model'
-import '../models/day.model'
-
+import '../models/todo.model'
 import Repository from './repository'
 
 class UnitOfWork {
-    static People = new Repository('Person')
-    static Teams = new Repository('Team')
-    static Customers = new Repository('Customer')
-    static Projects = new Repository('Project')
-    static Calendar = new Repository('Day')
+    static Todo = new Repository('Todo')
 }
 
-module.exports = UnitOfWork
+export default UnitOfWork;
